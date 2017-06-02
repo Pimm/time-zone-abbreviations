@@ -1,0 +1,13 @@
+{
+  "name": "time-zone-abbreviations",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "convert": "./convert.js"
+  },
+  "license": "X11",
+  "devDependencies": {
+    "async": "^2.4.1",
+    "csv-parse": "^1.2.0"
+  }
+}
