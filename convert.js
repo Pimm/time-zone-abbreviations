@@ -14,7 +14,7 @@ const parseTimeZoneValue = (function parseTimeZoneValueUnbound(matcher, input) {
 	}
 	var result = parseInt(matches[2], 10) * 60;
 	if (undefined !== matches[3]) {
-		result += parseInt(matches[3]);
+		result += parseInt(matches[3], 10);
 	}
 	if ('-' == matches[1]) {
 		result = -result;
