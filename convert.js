@@ -8,6 +8,9 @@ const parseCsv = require('csv-parse');
  * Parses "UTC +5" to 300 and "UTC +5 / +6" to [300, 360]. Returns undefined if the passed input could not be parsed.
  */
 const parseTimeZoneValue = (function parseTimeZoneValueUnbound(parseOffset, matcher, input) {
+	if ('UTC' == input) {
+		return 0;
+	}
 	const matches = matcher.exec(input);
 	if (null === matches) {
 		return undefined;
