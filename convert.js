@@ -5,22 +5,31 @@ const async = require('async');
 const parseCsv = require('csv-parse');
 
 /**
- * Parses "UTC +5" to 300. Returns undefined if the passed input could not be parsed.
+ * Parses "UTC +5" to 300 and "UTC +5 / +6" to [300, 360]. Returns undefined if the passed input could not be parsed.
  */
-const parseTimeZoneValue = (function parseTimeZoneValueUnbound(matcher, input) {
+const parseTimeZoneValue = (function parseTimeZoneValueUnbound(parseOffset, matcher, input) {
 	const matches = matcher.exec(input);
 	if (null === matches) {
 		return undefined;
 	}
-	var result = parseInt(matches[2], 10) * 60;
-	if (undefined !== matches[3]) {
-		result += parseInt(matches[3], 10);
+	if (undefined === matches[4] /* && undefined === matches[5] */) {
+		return parseOffset(matches, 1);
+	} else /* if (undefined !== matches[4] && undefined !== matches[5]) */ {
+		return [
+			parseOffset(matches, 1),
+			parseOffset(matches, 4)
+		];
 	}
-	if ('-' == matches[1]) {
+}).bind(undefined, function parseOffset(parts, startIndex) {
+	var result = parseInt(parts[startIndex + 1], 10) * 60;
+	if (undefined !== parts[startIndex + 2]) {
+		result += parseInt(parts[startIndex + 2], 10);
+	}
+	if ('-' == parts[startIndex /* + 0 */]) {
 		result = -result;
 	}
 	return result;
-}).bind(undefined, /^UTC (\+|-)([01]?\d)(?::([0-5]\d))?$/);
+}, /^UTC (\+|-)([01]?\d)(?::([0-5]\d))?(?: \/ (\+|-)([01]?\d)(?::([0-5]\d))?)?$/);
 
 function trimName(name) {
 	const lineBreakIndex = name.indexOf('\n');
